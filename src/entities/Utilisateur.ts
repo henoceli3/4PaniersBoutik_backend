@@ -4,29 +4,29 @@ import {
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Adresse } from './Adresse';
-import { Commande } from './Commande';
-import { HistoriqueVente } from './HistoriqueVente';
-import { Panier } from './Panier';
+} from "typeorm";
+import { Adresse } from "./Adresse";
+import { Commande } from "./Commande";
+import { HistoriqueVente } from "./HistoriqueVente";
+import { Panier } from "./Panier";
 
-@Index('utilisateur_email_key', ['email'], { unique: true })
-@Index('utilisateur_pkey', ['idUtilisateur'], { unique: true })
-@Entity('utilisateur', { schema: 'public' })
+@Index("utilisateur_email_key", ["email"], { unique: true })
+@Index("utilisateur_pkey", ["idUtilisateur"], { unique: true })
+@Entity("utilisateur", { schema: "public" })
 export class Utilisateur {
-  @PrimaryGeneratedColumn({ type: 'integer', name: 'id_utilisateur' })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_utilisateur" })
   idUtilisateur: number;
 
-  @Column('character varying', { name: 'nom_utilisateur', length: 100 })
+  @Column("character varying", { name: "nom_utilisateur", length: 100 })
   nomUtilisateur: string;
 
-  @Column('character varying', { name: 'prenom_utilisateur', length: 100 })
+  @Column("character varying", { name: "prenom_utilisateur", length: 100 })
   prenomUtilisateur: string;
 
-  @Column('character varying', { name: 'email', unique: true, length: 100 })
+  @Column("character varying", { name: "email", unique: true, length: 100 })
   email: string;
 
-  @Column('character varying', { name: 'pass_utilisateur', length: 255 })
+  @Column("character varying", { name: "pass_utilisateur", length: 255 })
   passUtilisateur: string;
 
   @OneToMany(() => Adresse, (adresse) => adresse.utilisateur)
@@ -37,7 +37,7 @@ export class Utilisateur {
 
   @OneToMany(
     () => HistoriqueVente,
-    (historiqueVente) => historiqueVente.utilisateur,
+    (historiqueVente) => historiqueVente.utilisateur
   )
   historiqueVentes: HistoriqueVente[];
 

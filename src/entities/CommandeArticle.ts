@@ -6,7 +6,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Article } from "./Article";
 import { Commande } from "./Commande";
 
 @Index("commande_article_pkey", ["id"], { unique: true })
@@ -15,14 +14,11 @@ export class CommandeArticle {
   @PrimaryGeneratedColumn({ type: "integer", name: "id" })
   id: number;
 
+  @Column("integer", { name: "article_id", nullable: true })
+  articleId: number | null;
+
   @Column("integer", { name: "quantité" })
   quantit: number;
-
-  @ManyToOne(() => Article, (article) => article.commandeArticles, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn([{ name: "article_id", referencedColumnName: "idArticle" }])
-  article: Article;
 
   @ManyToOne(() => Commande, (commande) => commande.commandeArticles, {
     onDelete: "CASCADE",

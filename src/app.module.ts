@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MarquesModule } from './marques/marques.module';
 import * as dotenv from 'dotenv';
 import { LoggerMiddleware } from './middleware/logger-middleware/logger-middleware';
+import { ArticlesModule } from './articles/articles.module';
+import { PanierModule } from './panier/panier.module';
 dotenv.config();
 
 @Module({
@@ -21,6 +23,8 @@ dotenv.config();
     }),
     UsersModule,
     MarquesModule,
+    ArticlesModule,
+    PanierModule,
   ],
   controllers: [AppController],
   providers: [AppService],

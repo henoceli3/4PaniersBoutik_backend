@@ -6,7 +6,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Article } from "./Article";
 import { Utilisateur } from "./Utilisateur";
 
 @Index("historique_vente_pkey", ["idHistorique"], { unique: true })
@@ -14,6 +13,9 @@ import { Utilisateur } from "./Utilisateur";
 export class HistoriqueVente {
   @PrimaryGeneratedColumn({ type: "integer", name: "id_historique" })
   idHistorique: number;
+
+  @Column("integer", { name: "article_id", nullable: true })
+  articleId: number | null;
 
   @Column("integer", { name: "quantité" })
   quantit: number;
@@ -27,12 +29,6 @@ export class HistoriqueVente {
 
   @Column("numeric", { name: "total", precision: 10, scale: 2 })
   total: string;
-
-  @ManyToOne(() => Article, (article) => article.historiqueVentes, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn([{ name: "article_id", referencedColumnName: "idArticle" }])
-  article: Article;
 
   @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.historiqueVentes, {
     onDelete: "CASCADE",
