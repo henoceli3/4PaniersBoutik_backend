@@ -5,37 +5,39 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from './User';
+} from "typeorm";
+import { Utilisateur } from "./Utilisateur";
 
-@Index('user_id', ['userId'], {})
-@Entity('adresse', { schema: 'boutique_en_ligne' })
+@Index("adresse_pkey", ["idAdresse"], { unique: true })
+@Entity("adresse", { schema: "public" })
 export class Adresse {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'id_adresse' })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_adresse" })
   idAdresse: number;
 
-  @Column('int', { name: 'user_id', nullable: true })
-  userId: number | null;
+  @Column("character varying", { name: "adresse_ligne1", length: 255 })
+  adresseLigne1: string;
 
-  @Column('varchar', { name: 'adresse_ligne1', nullable: true, length: 255 })
-  adresseLigne1: string | null;
-
-  @Column('varchar', { name: 'adresse_ligne2', nullable: true, length: 255 })
+  @Column("character varying", {
+    name: "adresse_ligne2",
+    nullable: true,
+    length: 255,
+  })
   adresseLigne2: string | null;
 
-  @Column('varchar', { name: 'ville', nullable: true, length: 100 })
-  ville: string | null;
+  @Column("character varying", { name: "ville", length: 100 })
+  ville: string;
 
-  @Column('varchar', { name: 'code_postal', nullable: true, length: 20 })
-  codePostal: string | null;
+  @Column("character varying", { name: "code_postal", length: 20 })
+  codePostal: string;
 
-  @Column('varchar', { name: 'pays', nullable: true, length: 100 })
-  pays: string | null;
+  @Column("character varying", { name: "pays", length: 100 })
+  pays: string;
 
-  @ManyToOne(() => User, (user) => user.adresses, {
-    onDelete: 'RESTRICT',
-    onUpdate: 'RESTRICT',
+  @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.adresses, {
+    onDelete: "CASCADE",
   })
-  @JoinColumn([{ name: 'user_id', referencedColumnName: 'idUser' }])
-  user: User;
+  @JoinColumn([
+    { name: "utilisateur_id", referencedColumnName: "idUtilisateur" },
+  ])
+  utilisateur: Utilisateur;
 }

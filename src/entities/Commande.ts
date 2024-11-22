@@ -5,57 +5,53 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { User } from "./User";
 import { Panier } from "./Panier";
+import { Utilisateur } from "./Utilisateur";
 import { CommandeArticle } from "./CommandeArticle";
 import { Paiement } from "./Paiement";
 
-@Index("user_id", ["userId"], {})
-@Index("panier_id", ["panierId"], {})
-@Entity("commande", { schema: "boutique_en_ligne" })
+@Index("commande_pkey", ["idCommande"], { unique: true })
+@Index("commande_panier_id_key", ["panierId"], { unique: true })
+@Entity("commande", { schema: "public" })
 export class Commande {
-  @PrimaryGeneratedColumn({ type: "int", name: "id_commande" })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_commande" })
   idCommande: number;
 
-  @Column("int", { name: "user_id", nullable: true })
-  userId: number | null;
-
-  @Column("int", { name: "panier_id", nullable: true })
+  @Column("integer", { name: "panier_id", nullable: true, unique: true })
   panierId: number | null;
 
-  @Column("datetime", {
+  @Column("timestamp without time zone", {
     name: "date_commande",
     nullable: true,
     default: () => "CURRENT_TIMESTAMP",
   })
   dateCommande: Date | null;
 
-  @Column("enum", {
+  @Column("character varying", {
     name: "status",
     nullable: true,
-    enum: ["en_cours", "livree", "annulee"],
-    default: () => "'en_cours'",
+    length: 50,
+    default: () => "'en cours'",
   })
-  status: "en_cours" | "livree" | "annulee" | null;
+  status: string | null;
 
-  @Column("decimal", { name: "total", nullable: true, precision: 10, scale: 2 })
-  total: string | null;
+  @Column("numeric", { name: "total", precision: 10, scale: 2 })
+  total: string;
 
-  @ManyToOne(() => User, (user) => user.commandes, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  })
-  @JoinColumn([{ name: "user_id", referencedColumnName: "idUser" }])
-  user: User;
-
-  @ManyToOne(() => Panier, (panier) => panier.commandes, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  })
+  @OneToOne(() => Panier, (panier) => panier.commande, { onDelete: "SET NULL" })
   @JoinColumn([{ name: "panier_id", referencedColumnName: "idPanier" }])
   panier: Panier;
+
+  @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.commandes, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn([
+    { name: "utilisateur_id", referencedColumnName: "idUtilisateur" },
+  ])
+  utilisateur: Utilisateur;
 
   @OneToMany(
     () => CommandeArticle,
@@ -63,6 +59,6 @@ export class Commande {
   )
   commandeArticles: CommandeArticle[];
 
-  @OneToMany(() => Paiement, (paiement) => paiement.commande)
-  paiements: Paiement[];
+  @OneToOne(() => Paiement, (paiement) => paiement.commande)
+  paiement: Paiement;
 }

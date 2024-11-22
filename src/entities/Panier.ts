@@ -5,48 +5,52 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Commande } from "./Commande";
-import { User } from "./User";
+import { Utilisateur } from "./Utilisateur";
 import { PanierArticle } from "./PanierArticle";
 
-@Index("user_id", ["userId"], {})
-@Entity("panier", { schema: "boutique_en_ligne" })
+@Index("panier_pkey", ["idPanier"], { unique: true })
+@Entity("panier", { schema: "public" })
 export class Panier {
-  @PrimaryGeneratedColumn({ type: "int", name: "id_panier" })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_panier" })
   idPanier: number;
 
-  @Column("int", { name: "user_id", nullable: true })
-  userId: number | null;
+  @Column("numeric", {
+    name: "total",
+    precision: 10,
+    scale: 2,
+    default: () => "0",
+  })
+  total: string;
 
-  @Column("decimal", { name: "total", nullable: true, precision: 10, scale: 2 })
-  total: string | null;
-
-  @Column("datetime", {
+  @Column("timestamp without time zone", {
     name: "date_creation",
     nullable: true,
     default: () => "CURRENT_TIMESTAMP",
   })
   dateCreation: Date | null;
 
-  @Column("enum", {
+  @Column("character varying", {
     name: "status",
     nullable: true,
-    enum: ["actif", "abandonne", "valide"],
+    length: 50,
     default: () => "'actif'",
   })
-  status: "actif" | "abandonne" | "valide" | null;
+  status: string | null;
 
-  @OneToMany(() => Commande, (commande) => commande.panier)
-  commandes: Commande[];
+  @OneToOne(() => Commande, (commande) => commande.panier)
+  commande: Commande;
 
-  @ManyToOne(() => User, (user) => user.paniers, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+  @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.paniers, {
+    onDelete: "CASCADE",
   })
-  @JoinColumn([{ name: "user_id", referencedColumnName: "idUser" }])
-  user: User;
+  @JoinColumn([
+    { name: "utilisateur_id", referencedColumnName: "idUtilisateur" },
+  ])
+  utilisateur: Utilisateur;
 
   @OneToMany(() => PanierArticle, (panierArticle) => panierArticle.panier)
   panierArticles: PanierArticle[];

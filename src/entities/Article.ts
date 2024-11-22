@@ -13,35 +13,26 @@ import { CommandeArticle } from "./CommandeArticle";
 import { HistoriqueVente } from "./HistoriqueVente";
 import { PanierArticle } from "./PanierArticle";
 
-@Index("categorie_id", ["categorieId"], {})
-@Index("marque_id", ["marqueId"], {})
-@Entity("article", { schema: "boutique_en_ligne" })
+@Index("article_pkey", ["idArticle"], { unique: true })
+@Entity("article", { schema: "public" })
 export class Article {
-  @PrimaryGeneratedColumn({ type: "int", name: "id_article" })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_article" })
   idArticle: number;
 
-  @Column("varchar", { name: "titre_article", nullable: true, length: 200 })
-  titreArticle: string | null;
+  @Column("character varying", { name: "titre_article", length: 255 })
+  titreArticle: string;
 
-  @Column("int", { name: "categorie_id", nullable: true })
-  categorieId: number | null;
-
-  @Column("int", { name: "marque_id", nullable: true })
-  marqueId: number | null;
-
-  @Column("decimal", { name: "prix", nullable: true, precision: 10, scale: 2 })
-  prix: string | null;
+  @Column("numeric", { name: "prix", precision: 10, scale: 2 })
+  prix: string;
 
   @ManyToOne(() => Categorie, (categorie) => categorie.articles, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+    onDelete: "SET NULL",
   })
   @JoinColumn([{ name: "categorie_id", referencedColumnName: "idCategorie" }])
   categorie: Categorie;
 
   @ManyToOne(() => Marque, (marque) => marque.articles, {
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+    onDelete: "SET NULL",
   })
   @JoinColumn([{ name: "marque_id", referencedColumnName: "idMarque" }])
   marque: Marque;

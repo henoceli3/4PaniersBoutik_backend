@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/User';
 import { Repository } from 'typeorm/repository/Repository';
 import * as bcrypt from 'bcrypt';
+import { Utilisateur } from 'src/entities/Utilisateur';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(Utilisateur)
+    private usersRepository: Repository<Utilisateur>,
   ) {}
 
   /**
@@ -22,10 +22,13 @@ export class UsersService {
    */
   async create(createUserDto: CreateUserDto) {
     try {
-      const hashedPassword = await bcrypt.hash(createUserDto.passUser, 10);
+      const hashedPassword = await bcrypt.hash(
+        createUserDto.passUtilisateur,
+        10,
+      );
       const user = this.usersRepository.create({
         ...createUserDto,
-        passUser: hashedPassword,
+        passUtilisateur: hashedPassword,
       });
       await this.usersRepository.save(user);
       return {
@@ -70,7 +73,9 @@ export class UsersService {
   async findOne(id: number) {
     try {
       return {
-        result: await this.usersRepository.findOne({ where: { idUser: id } }),
+        result: await this.usersRepository.findOne({
+          where: { idUtilisateur: id },
+        }),
         message: 'Utilisateur trouvé',
       };
     } catch (error) {
@@ -139,7 +144,10 @@ export class UsersService {
       if (!user) {
         return null;
       }
-      const isPasswordValid = await bcrypt.compare(password, user.passUser);
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.passUtilisateur,
+      );
       if (!isPasswordValid) {
         return {
           result: null,

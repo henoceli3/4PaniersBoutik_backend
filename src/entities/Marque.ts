@@ -1,13 +1,20 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Article } from "./Article";
 
-@Entity("marque", { schema: "boutique_en_ligne" })
+@Index("marque_pkey", ["idMarque"], { unique: true })
+@Entity("marque", { schema: "public" })
 export class Marque {
-  @PrimaryGeneratedColumn({ type: "int", name: "id_marque" })
+  @PrimaryGeneratedColumn({ type: "integer", name: "id_marque" })
   idMarque: number;
 
-  @Column("varchar", { name: "libelle_marque", nullable: true, length: 100 })
-  libelleMarque: string | null;
+  @Column("character varying", { name: "libelle_marque", length: 100 })
+  libelleMarque: string;
 
   @OneToMany(() => Article, (article) => article.marque)
   articles: Article[];
