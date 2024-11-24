@@ -41,7 +41,7 @@ export class ArticlesService {
    */
   async findAll() {
     try {
-      const articles = await this.articleRepository.find({
+      return await this.articleRepository.find({
         relations: [
           'ambassadeur',
           'categorie',
@@ -51,10 +51,6 @@ export class ArticlesService {
           'articleTailles',
         ],
       });
-      return {
-        resultat: articles,
-        message: 'Articles récupérés avec succès',
-      };
     } catch (error) {
       return {
         message: `Erreur lors de la récupération des articles: ${error.message}`,
