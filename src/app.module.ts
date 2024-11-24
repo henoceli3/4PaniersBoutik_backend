@@ -8,6 +8,9 @@ import * as dotenv from 'dotenv';
 import { LoggerMiddleware } from './middleware/logger-middleware/logger-middleware';
 import { ArticlesModule } from './articles/articles.module';
 import { PanierModule } from './panier/panier.module';
+import { AdresseModule } from './adresse/adresse.module';
+import { AmbassadeurModule } from './ambassadeur/ambassadeur.module';
+import { CommandeModule } from './commande/commande.module';
 dotenv.config();
 
 @Module({
@@ -25,6 +28,9 @@ dotenv.config();
     MarquesModule,
     ArticlesModule,
     PanierModule,
+    AdresseModule,
+    AmbassadeurModule,
+    CommandeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
