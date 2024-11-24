@@ -41,7 +41,7 @@ export class ArticlesService {
    */
   async findAll() {
     try {
-      return await this.articleRepository.find({
+      const articles = await this.articleRepository.find({
         relations: [
           'ambassadeur',
           'categorie',
@@ -51,8 +51,29 @@ export class ArticlesService {
           'articleTailles',
         ],
       });
+
+      return articles.map((article) => ({
+        articleId: article.idArticle,
+        articleCategorie: article.categorie?.libelleCategorie || '',
+        articleName: article.titreArticle,
+        articleMarque: article.marque?.libelleMarque || '',
+        articleQuantity: article.quantit,
+        articlePrice: parseFloat(article.prix),
+        articleAmbassador: article.ambassadeur?.nomAmbassadeur || '',
+        articleAmbassadorNum: '',
+        articleChampionShip: article.championnat || '',
+        articleYearEdition: article.anneeEdition || '',
+        articleTeam: article.equipe || '',
+        articleOverview: article.overview || '',
+        articleSize: article.articleTailles?.map((t) => t.taille) || [],
+        articleStyles: article.articleStyles?.map((s) => s.style) || [],
+        articleDescription: article.description || '',
+        articleColorName: article.colorsName || '',
+        articleColor: article.articleCouleurs?.map((c) => c.urlCouleur) || [],
+      }));
     } catch (error) {
       return {
+        resultat: null,
         message: `Erreur lors de la récupération des articles: ${error.message}`,
       };
     }
